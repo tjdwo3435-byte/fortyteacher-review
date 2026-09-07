@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>프로그램 후기 남기기</title>
+<meta name="description" content="참여하신 프로그램에 대한 후기를 남겨주세요. 1분이면 충분합니다." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+/* ============================================================
+   포티처 후기 폼 — 디자인 토큰
+   ============================================================ */
+:root{
+  --mint:        #12B5A8;
+  --mint-dark:   #0E9A8F;
+  --mint-tint:   #E6F7F5;
+  --mint-soft:   #B9E9E4;
+  --ink:         #191F28;
+  --ink-sub:     #6B7684;
+  --ink-mute:    #A7B0BA;
+  --line:        #E8EBED;
+  --bg:          #F2F4F6;
+  --card:        #FFFFFF;
+  --star-off:    #DDE2E6;
+  --star-on:     #12B5A8;
+  --radius:      22px;
+  --shadow:      0 6px 28px rgba(25,31,40,.07);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,Roboto,'Helvetica Neue','Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  letter-spacing:-0.02em;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:56px 20px 80px;
+}
+
+/* ---------- 상단 브랜드 + 진행바 ---------- */
+.topbar{width:100%;max-width:600px;margin-bottom:18px;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:16px;}
+.brand-mark{
+  width:26px;height:26px;border-radius:9px;
+  background:linear-gradient(140deg,var(--mint) 0%,#3FD0C3 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.04em;
+}
+.brand-name{font-size:15px;font-weight:700;color:var(--ink);}
+.brand-sub{font-size:13px;color:var(--ink-mute);font-weight:500;margin-left:2px;}
+
+.progress-wrap{display:flex;align-items:center;gap:12px;height:20px;}
+.progress{flex:1;height:6px;border-radius:99px;background:#E3E7EA;overflow:hidden;}
+.progress-bar{
+  height:100%;width:0%;border-radius:99px;
+  background:linear-gradient(90deg,var(--mint) 0%,#37CCBE 100%);
+  transition:width .38s cubic-bezier(.22,1,.36,1);
+}
+.progress-count{font-size:13px;font-weight:600;color:var(--ink-mute);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;}
+.topbar.is-hidden{visibility:hidden;}
+
+/* ---------- 카드 ---------- */
+.card{
+  width:100%;max-width:600px;background:var(--card);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:44px 44px 36px;position:relative;overflow:hidden;
+}
+
+/* ---------- 화면 전환 ---------- */
+.screen{display:none;}
+.screen.is-active{display:block;animation:slideIn .34s cubic-bezier(.22,1,.36,1);}
+.screen.is-active.back{animation-name:slideInBack;}
+@keyframes slideIn{from{opacity:0;transform:translateX(22px);}to{opacity:1;transform:none;}}
+@keyframes slideInBack{from{opacity:0;transform:translateX(-22px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){
+  .screen.is-active{animation:none;}
+  .hero-icon,.hero-icon .star{animation:none;opacity:1;}
+  .progress-bar{transition:none;}
+  *{scroll-behavior:auto;}
+}
+
+/* ---------- 인트로 아이콘 ---------- */
+.hero-icon{
+  width:92px;height:92px;border-radius:26px;margin:0 0 24px;
+  background:linear-gradient(142deg,var(--mint) 0%,#3FD0C3 100%);
+  box-shadow:0 10px 24px rgba(18,181,168,.26);
+  display:flex;align-items:center;justify-content:center;
+  animation:tileIn .5s cubic-bezier(.22,1.15,.36,1) both;
+}
+.hero-icon svg{width:58px;height:58px;overflow:visible;}
+.hero-icon .bubble{fill:#fff;}
+.hero-icon .star{fill:var(--mint);animation:starIn .4s .28s ease-out both;}
+@keyframes tileIn{from{opacity:0;transform:translateY(10px) scale(.92);}to{opacity:1;transform:none;}}
+@keyframes starIn{from{opacity:0;}to{opacity:1;}}
+
+/* ---------- 타이포 ---------- */
+.step-tag{
+  display:inline-block;padding:5px 11px;border-radius:8px;
+  background:var(--mint-tint);color:var(--mint-dark);
+  font-size:13px;font-weight:700;margin-bottom:14px;
+}
+h1{font-size:27px;font-weight:800;line-height:1.38;margin:0 0 10px;letter-spacing:-0.035em;}
+h2{font-size:23px;font-weight:700;line-height:1.42;margin:0 0 8px;letter-spacing:-0.032em;}
+.lead{font-size:15.5px;color:var(--ink-sub);margin:0;line-height:1.6;}
+.helper{font-size:13.5px;color:var(--ink-mute);margin-top:6px;}
+
+/* ---------- 별점 ---------- */
+.rating{margin:34px 0 6px;}
+.stars{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
+.star{position:relative;width:56px;height:56px;flex:0 0 auto;}
+.star svg{width:56px;height:56px;display:block;}
+.star .layer-off path{fill:var(--star-off);}
+.star .layer-on{position:absolute;inset:0;width:0;overflow:hidden;transition:width .12s linear;}
+.star .layer-on path{fill:var(--star-on);}
+.star .hit{position:absolute;top:0;height:100%;width:50%;border:0;background:transparent;padding:0;cursor:pointer;}
+.star .hit.left{left:0;} .star .hit.right{right:0;}
+.star .hit:focus-visible{outline:2px solid var(--mint-dark);outline-offset:3px;border-radius:6px;}
+
+.score-view{text-align:center;min-height:62px;}
+.score-num{font-size:34px;font-weight:800;color:var(--mint-dark);letter-spacing:-0.04em;line-height:1.2;font-variant-numeric:tabular-nums;}
+.score-num .of{font-size:18px;font-weight:600;color:var(--ink-mute);margin-left:2px;}
+.score-label{font-size:15px;font-weight:600;color:var(--ink-sub);margin-top:2px;}
+.score-view.empty .score-num{color:var(--ink-mute);}
+.score-view.empty .score-label{color:var(--ink-mute);font-weight:500;}
+
+.scale-guide{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-mute);margin:14px 4px 0;}
+
+/* ---------- 버튼 ---------- */
+.actions{display:flex;align-items:center;gap:10px;margin-top:30px;}
+.actions-intro{margin-top:44px;margin-bottom:6px;}
+.actions-intro .btn-primary{height:60px;font-size:17px;border-radius:16px;}
+.btn{
+  border:0;border-radius:14px;font-family:inherit;font-size:16px;font-weight:700;
+  letter-spacing:-0.02em;cursor:pointer;transition:background .15s,color .15s,transform .06s;
+}
+.btn:active{transform:scale(.99);}
+.btn:focus-visible{outline:2px solid var(--mint-dark);outline-offset:2px;}
+.btn-primary{flex:1;height:54px;background:var(--mint);color:#fff;}
+.btn-primary:hover{background:var(--mint-dark);}
+.btn-primary:disabled{background:#DDE2E6;color:#fff;cursor:default;}
+.btn-ghost{height:54px;padding:0 20px;background:#F2F4F6;color:var(--ink-sub);}
+.btn-ghost:hover{background:#E8EBED;}
+.btn-text{background:none;border:0;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-mute);cursor:pointer;padding:8px 4px;}
+.btn-text:hover{color:var(--ink-sub);text-decoration:underline;}
+
+/* ---------- 의견 입력 ---------- */
+.recap{border:1px solid var(--line);border-radius:16px;padding:6px 16px;margin:26px 0 22px;}
+.recap-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);}
+.recap-row:last-child{border-bottom:0;}
+.recap-q{font-size:14.5px;color:var(--ink-sub);font-weight:500;}
+.recap-right{display:flex;align-items:center;gap:10px;}
+.recap-score{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+.recap-edit{background:none;border:0;font-family:inherit;font-size:13px;font-weight:600;color:var(--mint-dark);cursor:pointer;padding:4px 6px;border-radius:6px;}
+.recap-edit:hover{background:var(--mint-tint);}
+
+textarea{
+  width:100%;min-height:150px;resize:vertical;padding:16px 18px;
+  border:1px solid var(--line);border-radius:16px;background:#FAFBFC;
+  font-family:inherit;font-size:15.5px;line-height:1.65;color:var(--ink);
+  letter-spacing:-0.02em;transition:border-color .15s,background .15s;
+}
+textarea::placeholder{color:var(--ink-mute);}
+textarea:focus{outline:none;border-color:var(--mint);background:#fff;}
+.count{text-align:right;font-size:12.5px;color:var(--ink-mute);margin-top:8px;font-variant-numeric:tabular-nums;}
+
+/* ---------- 완료 ---------- */
+.done{text-align:center;padding:16px 0 8px;}
+.done-mark{
+  width:76px;height:76px;border-radius:50%;background:var(--mint-tint);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 22px;
+}
+.done-mark svg{width:38px;height:38px;}
+.done-mark path{stroke:var(--mint);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;fill:none;
+  stroke-dasharray:40;stroke-dashoffset:40;animation:draw .5s .12s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+.done h2{margin-bottom:10px;}
+.avg-box{background:#FAFBFC;border-radius:16px;padding:20px;margin-top:26px;}
+.avg-num{font-size:30px;font-weight:800;color:var(--mint-dark);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;}
+.avg-caption{font-size:13.5px;color:var(--ink-mute);margin-top:2px;}
+
+.error-msg{
+  display:none;margin-top:16px;padding:13px 16px;border-radius:12px;
+  background:#FFF1F0;color:#C0392B;font-size:14px;font-weight:500;line-height:1.5;
+}
+.error-msg.show{display:block;}
+
+.footnote{margin-top:20px;margin-bottom:4px;font-size:12.5px;color:var(--ink-mute);text-align:center;}
+
+/* ---------- 모바일 ---------- */
+@media (max-width:600px){
+  body{padding:28px 16px 48px;}
+  .card{padding:30px 22px 26px;border-radius:20px;}
+  h1{font-size:23px;} h2{font-size:20px;}
+  .hero-icon{width:76px;height:76px;border-radius:22px;margin-bottom:20px;}
+  .hero-icon svg{width:48px;height:48px;}
+  .stars{gap:4px;}
+  .star,.star svg{width:50px;height:50px;}
+  .actions{flex-direction:column-reverse;}
+  .btn-ghost{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="brand">
+    <div class="brand-mark">4</div>
+    <span class="brand-name" id="brandName">포티처</span>
+    <span class="brand-sub">프로그램 후기</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress-count" id="progressCount">0/5</div>
+  </div>
+</div>
+
+<main class="card" id="card">
+
+  <!-- 인트로 -->
+  <section class="screen is-active" data-screen="intro">
+    <div class="hero-icon" aria-hidden="true">
+      <svg viewBox="0 0 88 88">
+        <path class="bubble" d="M22 18h44a12 12 0 0 1 12 12v22a12 12 0 0 1-12 12H48l-12 11V64H22a12 12 0 0 1-12-12V30a12 12 0 0 1 12-12z"/>
+        <path class="star" transform="translate(24.8 21.4) scale(1.6)" d="M12 2.6l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.67l-5.9 3.1 1.13-6.57L2.45 9.54l6.6-.96L12 2.6z"/>
+      </svg>
+    </div>
+    <h1>프로그램은<br>어떠셨나요?</h1>
+    <p class="lead" id="introLead">남겨주신 후기로 학생과 선생님 모두에게<br>더 좋은 프로그램을 만들어가겠습니다.<br><span style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span></p>
+    <div class="actions actions-intro">
+      <button class="btn btn-primary" data-action="start">후기 남기기</button>
+    </div>
+    <p class="footnote">답변은 프로그램 개선 목적으로만 사용됩니다.</p>
+  </section>
+
+  <!-- 문항 4개는 JS가 이 자리에 생성 -->
+  <div id="questionSlot"></div>
+
+  <!-- 의견 -->
+  <section class="screen" data-screen="comment">
+    <span class="step-tag">마지막 5/5</span>
+    <h2>더 남기고 싶은 의견이 있나요?</h2>
+    <p class="lead">좋았던 점, 아쉬웠던 점, 다음에 바라는 점 무엇이든 좋습니다.</p>
+
+    <div class="recap" id="recap"></div>
+
+    <textarea id="comment" maxlength="1000" placeholder="예) 활동 시간이 조금만 더 길었으면 좋겠어요."></textarea>
+    <div class="count"><span id="count">0</span>/1000</div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" data-action="prev">이전</button>
+      <button class="btn btn-primary" id="submitBtn" data-action="submit">후기 제출하기</button>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </section>
+
+  <!-- 완료 -->
+  <section class="screen" data-screen="done">
+    <div class="done">
+      <div class="done-mark">
+        <svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></svg>
+      </div>
+      <h2>후기가 전달됐어요</h2>
+      <p class="lead">소중한 의견 감사합니다.<br>남겨주신 이야기는 다음 프로그램에 반영하겠습니다.</p>
+      <div class="avg-box">
+        <div class="avg-num" id="avgNum">0.0</div>
+        <div class="avg-caption">남겨주신 평균 점수</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   설정 — 이 블록만 바꾸면 됩니다
+   ============================================================ */
+const CONFIG = {
+  brandName:   "포티처",                    // 상단에 표시될 이름
+  programName: "",                          // 예: "2026 진로탐색 캠프" (비우면 표시 안 함)
+  formEmail:   "idengroup@naver.com",       // FormSubmit 수신 메일. 비우면 제출은 되지만 메일 발송은 생략
+  sheetUrl:    "https://script.google.com/macros/s/AKfycbxIFe8ZBzj6Xlhv9RbWvvAgwclgMCf6Xh2n1BYKY3HItLXKv1Zjh4jKdVv_gGqsoJaI/exec", // Apps Script 웹앱 /exec URL. 비우면 시트 저장 없이 메일만 발송
+  gaId:        ""                           // GA4 측정 ID (예: "G-XXXXXXX"). 비우면 추적 안 함
+};
+
+const QUESTIONS = [
+  { key:"만족도",   title:"프로그램 전반에 만족하셨나요?", lead:"내용·진행·분위기를 모두 포함해 전체적으로 평가해주세요." },
+  { key:"강사",     title:"강사는 적절했나요?",           lead:"전달력, 참여자와의 소통, 전문성을 기준으로 평가해주세요." },
+  { key:"운영방식", title:"운영 방식은 적절했나요?",      lead:"시간 배분, 진행 순서, 안내와 준비 상태를 평가해주세요." },
+  { key:"교육내용", title:"교육 내용은 적절했나요?",      lead:"난이도와 구성이 참여자에게 잘 맞았는지 평가해주세요." }
+];
+
+const LABELS = {
+  0:"아직 선택하지 않았어요",
+  1:"많이 아쉬웠어요", 1.5:"아쉬웠어요",
+  2:"기대에 못 미쳤어요", 2.5:"조금 아쉬워요",
+  3:"보통이에요", 3.5:"괜찮았어요",
+  4:"만족해요", 4.5:"많이 만족해요",
+  5:"아주 만족해요"
+};
+
+const STAR_PATH = "M12 2.6l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.67l-5.9 3.1 1.13-6.57L2.45 9.54l6.6-.96L12 2.6z";
+
+/* ============================================================
+   상태
+   ============================================================ */
+const scores = [null, null, null, null];
+let index = 0;                 // 0=인트로, 1~4=문항, 5=의견, 6=완료
+let submitted = false;
+
+const $ = s => document.querySelector(s);
+const screens = () => [...document.querySelectorAll('.screen')];
+
+/* ============================================================
+   문항 화면 생성
+   ============================================================ */
+function buildQuestions(){
+  const slot = $('#questionSlot');
+  QUESTIONS.forEach((q, i) => {
+    const sec = document.createElement('section');
+    sec.className = 'screen';
+    sec.dataset.screen = 'q' + (i + 1);
+    sec.innerHTML = `
+      <span class="step-tag">${i + 1}/5</span>
+      <h2>${q.title}</h2>
+      <p class="lead">${q.lead}</p>
+      <div class="rating">
+        <div class="stars" data-q="${i}" role="group" aria-label="${q.key} 점수 선택">
+          ${[1,2,3,4,5].map(n => `
+            <div class="star">
+              <svg class="layer-off" viewBox="0 0 24 24" aria-hidden="true"><path d="${STAR_PATH}"/></svg>
+              <div class="layer-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${STAR_PATH}"/></svg></div>
+              <button type="button" class="hit left"  data-v="${n - 0.5}" aria-label="${n - 0.5}점"></button>
+              <button type="button" class="hit right" data-v="${n}"       aria-label="${n}점"></button>
+            </div>`).join('')}
+        </div>
+        <div class="score-view empty" data-view="${i}">
+          <div class="score-num">–<span class="of"> / 5</span></div>
+          <div class="score-label">${LABELS[0]}</div>
+        </div>
+        <div class="scale-guide"><span>1점 · 매우 아쉬움</span><span>5점 · 매우 만족</span></div>
+      </div>
+      <div class="actions">
+        ${i === 0 ? '' : '<button class="btn btn-ghost" data-action="prev">이전</button>'}
+        <button class="btn btn-primary" data-action="next" disabled>다음</button>
+      </div>
+      <p class="helper" style="text-align:center">별의 왼쪽 절반을 누르면 0.5점 단위로 선택돼요.</p>
+    `;
+    slot.appendChild(sec);
+  });
+}
+
+/* ============================================================
+   별점 인터랙션
+   ============================================================ */
+function paint(qi, value){
+  const row = document.querySelector(`.stars[data-q="${qi}"]`);
+  [...row.querySelectorAll('.star')].forEach((star, s) => {
+    const filled = Math.min(Math.max(value - s, 0), 1);
+    star.querySelector('.layer-on').style.width = (filled * 100) + '%';
+  });
+}
+
+function renderScore(qi){
+  const v = scores[qi];
+  const view = document.querySelector(`.score-view[data-view="${qi}"]`);
+  view.classList.toggle('empty', v === null);
+  view.querySelector('.score-num').innerHTML = (v === null ? '–' : v.toFixed(1)) + '<span class="of"> / 5</span>';
+  view.querySelector('.score-label').textContent = LABELS[v || 0];
+  paint(qi, v || 0);
+  const nextBtn = document.querySelector(`[data-screen="q${qi + 1}"] [data-action="next"]`);
+  if (nextBtn) nextBtn.disabled = (v === null);
+}
+
+function bindStars(){
+  document.querySelectorAll('.stars').forEach(row => {
+    const qi = +row.dataset.q;
+    row.querySelectorAll('.hit').forEach(hit => {
+      hit.addEventListener('mouseenter', () => paint(qi, +hit.dataset.v));
+      hit.addEventListener('focus',      () => paint(qi, +hit.dataset.v));
+      hit.addEventListener('blur',       () => paint(qi, scores[qi] || 0));
+      hit.addEventListener('click', () => {
+        scores[qi] = +hit.dataset.v;
+        renderScore(qi);
+        track('rate_question', { question: QUESTIONS[qi].key, score: scores[qi] });
+      });
+    });
+    row.addEventListener('mouseleave', () => paint(qi, scores[qi] || 0));
+  });
+}
+
+/* ============================================================
+   화면 이동
+   ============================================================ */
+function go(to, isBack){
+  if (to < 0 || to > 6) return;
+  const order = ['intro','q1','q2','q3','q4','comment','done'];
+  screens().forEach(s => { s.classList.remove('is-active','back'); });
+  const el = document.querySelector(`[data-screen="${order[to]}"]`);
+  el.classList.add('is-active');
+  if (isBack) el.classList.add('back');
+  index = to;
+
+  const bar = $('#progressBar'), count = $('#progressCount');
+  const step = Math.min(Math.max(to, 0), 5);
+  bar.style.width = (step / 5 * 100) + '%';
+  count.textContent = step + '/5';
+  $('#topbar').classList.toggle('is-hidden', to === 0 || to === 6);
+
+  if (to === 5) drawRecap();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // 의견 화면에서만 입력창에 포커스
+  if (to === 5) setTimeout(() => $('#comment').focus({ preventScroll:true }), 80);
+}
+
+function drawRecap(){
+  $('#recap').innerHTML = QUESTIONS.map((q, i) => `
+    <div class="recap-row">
+      <span class="recap-q">${q.title.replace(/\?$/,'')}</span>
+      <span class="recap-right">
+        <span class="recap-score">${scores[i] === null ? '–' : scores[i].toFixed(1) + '점'}</span>
+        <button class="recap-edit" data-goto="${i + 1}">수정</button>
+      </span>
+    </div>`).join('');
+}
+
+/* ============================================================
+   제출
+   ============================================================ */
+function average(){
+  const v = scores.filter(s => s !== null);
+  return v.length ? (v.reduce((a,b) => a + b, 0) / v.length) : 0;
+}
+
+async function submit(){
+  if (submitted) return;
+  const btn = $('#submitBtn'), err = $('#errorMsg');
+  err.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = '보내는 중...';
+
+  const commentText = $('#comment').value.trim();
+  const avg = +average().toFixed(1);
+
+  const emailPayload = {
+    _subject: `[프로그램 후기] ${CONFIG.programName || CONFIG.brandName} — 평균 ${avg.toFixed(1)}점`,
+    _template: 'table',
+    프로그램: CONFIG.programName || '(미지정)',
+    '1. 전반적인 만족도': scores[0] + '점',
+    '2. 강사의 적절도':   scores[1] + '점',
+    '3. 운영방식의 적절도': scores[2] + '점',
+    '4. 교육내용의 적절도': scores[3] + '점',
+    평균점수: avg.toFixed(1) + '점',
+    의견: commentText || '(작성 없음)',
+    제출시각: new Date().toLocaleString('ko-KR')
+  };
+
+  const emailTask = CONFIG.formEmail
+    ? fetch('https://formsubmit.co/ajax/' + CONFIG.formEmail, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+        body: JSON.stringify(emailPayload)
+      })
+    : null;
+
+  // sheetUrl이 비어 있으면 시트 전송 없이 기존 동작(메일 결과만으로 성공/실패 판단)을 유지한다.
+  if (!CONFIG.sheetUrl){
+    try{
+      if (emailTask){
+        const res = await emailTask;
+        if (!res.ok) throw new Error('네트워크 응답 오류');
+      }
+      finishSubmit(avg, false);
+    }catch(e){
+      showSubmitError();
+    }
+    return;
+  }
+
+  const sheetPayload = {
+    program: CONFIG.programName || '(미지정)',
+    q1: scores[0], q2: scores[1], q3: scores[2], q4: scores[3],
+    avg: avg,
+    comment: commentText
+  };
+  const sheetTask = fetch(CONFIG.sheetUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(sheetPayload)
+  });
+
+  // 시트 저장과 메일 발송은 병렬로 처리하되, 완료 화면 진입은 시트 저장 성공 여부로만 판단한다.
+  // 메일은 사람이 확인하는 알림일 뿐이라 실패해도 데이터 저장에는 영향이 없기 때문.
+  const [sheetResult] = await Promise.allSettled(emailTask ? [sheetTask, emailTask] : [sheetTask]);
+  const sheetOk = sheetResult.status === 'fulfilled' && sheetResult.value.ok;
+
+  if (sheetOk){
+    finishSubmit(avg, true);
+  }else{
+    showSubmitError();
+  }
+}
+
+function finishSubmit(avg, sheetSaved){
+  submitted = true;
+  track('review_submit', { average: avg, sheet_saved: sheetSaved });
+  $('#avgNum').textContent = avg.toFixed(1);
+  go(6);
+}
+
+function showSubmitError(){
+  const btn = $('#submitBtn'), err = $('#errorMsg');
+  track('review_failed', {});
+  err.textContent = '전송에 실패했습니다. 네트워크를 확인하고 다시 눌러주세요.';
+  err.classList.add('show');
+  btn.disabled = false;
+  btn.textContent = '후기 제출하기';
+}
+
+/* ============================================================
+   GA4 (선택)
+   ============================================================ */
+function track(name, params){
+  if (typeof gtag === 'function') gtag('event', name, params || {});
+}
+function initGA(){
+  if (!CONFIG.gaId) return;
+  const s = document.createElement('script');
+  s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + CONFIG.gaId;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', CONFIG.gaId);
+}
+
+/* ============================================================
+   초기화
+   ============================================================ */
+function init(){
+  $('#brandName').textContent = CONFIG.brandName;
+  if (CONFIG.programName){
+    $('#introLead').innerHTML =
+      `<strong style="color:var(--ink)">${CONFIG.programName}</strong>에 남겨주신 후기로 학생과 선생님 모두에게<br>더 좋은 프로그램을 만들어가겠습니다.` +
+      `<br><span style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span>`;
+  }
+  buildQuestions();
+  bindStars();
+  QUESTIONS.forEach((_, i) => renderScore(i));
+  go(0);
+  initGA();
+
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-action]');
+    if (a){
+      const act = a.dataset.action;
+      if (act === 'start'){ track('review_start', {}); go(1); }
+      if (act === 'next')  go(index + 1);
+      if (act === 'prev')  go(index - 1, true);
+      if (act === 'submit') submit();
+    }
+    const g = e.target.closest('[data-goto]');
+    if (g) go(+g.dataset.goto, true);
+  });
+
+  $('#comment').addEventListener('input', e => { $('#count').textContent = e.target.value.length; });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && index >= 1 && index <= 4 && scores[index - 1] !== null && e.target.tagName !== 'TEXTAREA'){
+      e.preventDefault(); go(index + 1);
+    }
+  });
+
+  window.addEventListener('beforeunload', e => {
+    if (index > 0 && index < 6 && !submitted){ e.preventDefault(); e.returnValue = ''; }
+  });
+}
+init();
+</script>
+</body>
+</html>
