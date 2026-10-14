@@ -29,7 +29,7 @@
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 body{
   margin:0;
   background:var(--bg);
@@ -38,6 +38,10 @@ body{
   font-size:16px;
   line-height:1.55;
   letter-spacing:-0.02em;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+  min-height:100vh;
+  min-height:100dvh;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -46,7 +50,7 @@ body{
 }
 
 /* ---------- 상단 브랜드 + 진행바 ---------- */
-.topbar{width:100%;max-width:600px;margin-bottom:18px;}
+.topbar{width:100%;max-width:600px;margin-bottom:18px;flex-shrink:0;}
 .brand{display:flex;align-items:center;gap:9px;margin-bottom:16px;}
 .brand-mark{
   width:26px;height:26px;border-radius:9px;
@@ -72,6 +76,7 @@ body{
   width:100%;max-width:600px;background:var(--card);
   border-radius:var(--radius);box-shadow:var(--shadow);
   padding:44px 44px 36px;position:relative;overflow:hidden;
+  flex-shrink:0;
 }
 
 /* ---------- 화면 전환 ---------- */
@@ -153,10 +158,10 @@ h2{font-size:23px;font-weight:700;line-height:1.42;margin:0 0 8px;letter-spacing
 
 /* ---------- 의견 입력 ---------- */
 .recap{border:1px solid var(--line);border-radius:16px;padding:6px 16px;margin:26px 0 22px;}
-.recap-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);}
+.recap-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
 .recap-row:last-child{border-bottom:0;}
-.recap-q{font-size:14.5px;color:var(--ink-sub);font-weight:500;}
-.recap-right{display:flex;align-items:center;gap:10px;}
+.recap-q{font-size:14.5px;color:var(--ink-sub);font-weight:500;min-width:0;}
+.recap-right{display:flex;align-items:center;gap:10px;flex-shrink:0;white-space:nowrap;}
 .recap-score{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
 .recap-edit{background:none;border:0;font-family:inherit;font-size:13px;font-weight:600;color:var(--mint-dark);cursor:pointer;padding:4px 6px;border-radius:6px;}
 .recap-edit:hover{background:var(--mint-tint);}
@@ -164,7 +169,7 @@ h2{font-size:23px;font-weight:700;line-height:1.42;margin:0 0 8px;letter-spacing
 textarea{
   width:100%;min-height:150px;resize:vertical;padding:16px 18px;
   border:1px solid var(--line);border-radius:16px;background:#FAFBFC;
-  font-family:inherit;font-size:15.5px;line-height:1.65;color:var(--ink);
+  font-family:inherit;font-size:16px;line-height:1.65;color:var(--ink);
   letter-spacing:-0.02em;transition:border-color .15s,background .15s;
 }
 textarea::placeholder{color:var(--ink-mute);}
@@ -196,15 +201,30 @@ textarea:focus{outline:none;border-color:var(--mint);background:#fff;}
 
 /* ---------- 모바일 ---------- */
 @media (max-width:600px){
-  body{padding:28px 16px 48px;}
+  body{
+    padding:calc(24px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right))
+            calc(40px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+  }
   .card{padding:30px 22px 26px;border-radius:20px;}
   h1{font-size:23px;} h2{font-size:20px;}
+  .lead br{display:none;}
+  .lead .lead-note{display:block;margin-top:4px;}
   .hero-icon{width:76px;height:76px;border-radius:22px;margin-bottom:20px;}
   .hero-icon svg{width:48px;height:48px;}
+  .rating{margin-top:28px;}
   .stars{gap:4px;}
-  .star,.star svg{width:50px;height:50px;}
-  .actions{flex-direction:column-reverse;}
+  /* 화면 폭에 맞춰 별 크기를 줄여 5개가 항상 한 줄에 들어가게 함 */
+  .star,.star svg{width:min(50px, calc((100vw - 92px) / 5));height:min(50px, calc((100vw - 92px) / 5));}
+  .actions{flex-direction:column-reverse;align-items:stretch;}
+  /* 세로 배치에서 flex:1이 버튼 높이를 0으로 만드는 문제 방지 */
+  .btn-primary{flex:0 0 auto;width:100%;}
   .btn-ghost{width:100%;}
+  .recap{padding:4px 14px;}
+  .recap-q{font-size:14px;}
+}
+@media (max-width:340px){
+  .card{padding:26px 18px 22px;}
+  .star,.star svg{width:calc((100vw - 84px) / 5);height:calc((100vw - 84px) / 5);}
 }
 </style>
 </head>
@@ -233,7 +253,7 @@ textarea:focus{outline:none;border-color:var(--mint);background:#fff;}
       </svg>
     </div>
     <h1>프로그램은<br>어떠셨나요?</h1>
-    <p class="lead" id="introLead">남겨주신 후기로 학생과 선생님 모두에게<br>더 좋은 프로그램을 만들어가겠습니다.<br><span style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span></p>
+    <p class="lead" id="introLead">남겨주신 후기로 학생과 선생님 모두에게 <br>더 좋은 프로그램을 만들어가겠습니다. <br><span class="lead-note" style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span></p>
     <div class="actions actions-intro">
       <button class="btn btn-primary" data-action="start">후기 남기기</button>
     </div>
@@ -268,7 +288,7 @@ textarea:focus{outline:none;border-color:var(--mint);background:#fff;}
         <svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></svg>
       </div>
       <h2>후기가 전달됐어요</h2>
-      <p class="lead">소중한 의견 감사합니다.<br>남겨주신 이야기는 다음 프로그램에 반영하겠습니다.</p>
+      <p class="lead">소중한 의견 감사합니다. <br>남겨주신 이야기는 다음 프로그램에 반영하겠습니다.</p>
       <div class="avg-box">
         <div class="avg-num" id="avgNum">0.0</div>
         <div class="avg-caption">남겨주신 평균 점수</div>
@@ -549,8 +569,8 @@ function init(){
   $('#brandName').textContent = CONFIG.brandName;
   if (CONFIG.programName){
     $('#introLead').innerHTML =
-      `<strong style="color:var(--ink)">${CONFIG.programName}</strong>에 남겨주신 후기로 학생과 선생님 모두에게<br>더 좋은 프로그램을 만들어가겠습니다.` +
-      `<br><span style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span>`;
+      `<strong style="color:var(--ink)">${CONFIG.programName}</strong>에 남겨주신 후기로 학생과 선생님 모두에게 <br>더 좋은 프로그램을 만들어가겠습니다. ` +
+      `<br><span class="lead-note" style="color:var(--ink-mute)">5개 문항, 1분이면 끝납니다.</span>`;
   }
   buildQuestions();
   bindStars();
